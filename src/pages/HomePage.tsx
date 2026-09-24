@@ -132,6 +132,8 @@ export function HomePage() {
   );
 }
 
+const heroEase = [0.16, 1, 0.3, 1] as const;
+
 function Hero() {
   const { hero } = homeContent;
   const contactHref = getContactHref();
@@ -143,17 +145,41 @@ function Hero() {
   });
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "6%"]);
 
+  const rise = (delay: number) =>
+    reduce
+      ? {}
+      : {
+          initial: { opacity: 0, y: 22 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.95, delay, ease: heroEase },
+        };
+
   return (
     <section className="hero" aria-label="Abertura" ref={ref}>
       <div className="frame frame-hero">
-        <motion.div className="hero-zoom" style={reduce ? undefined : { y }}>
+        <motion.div
+          className="hero-zoom"
+          initial={reduce ? false : { scale: 1.12 }}
+          animate={reduce ? undefined : { scale: 1 }}
+          transition={{ duration: 2.2, ease: [0.22, 1, 0.36, 1] }}
+          style={reduce ? undefined : { y }}
+        >
           <Photo {...hero.image} priority />
         </motion.div>
       </div>
       <div className="hero-shade" />
+      {reduce ? null : (
+        <motion.div
+          className="hero-veil"
+          initial={{ opacity: 0.5 }}
+          animate={{ opacity: 0 }}
+          transition={{ duration: 1.4, ease: heroEase }}
+          aria-hidden="true"
+        />
+      )}
       <div className="hero-copy">
         <div className="hero-lead">
-          <div className="hero-mark-wrap">
+          <motion.div className="hero-mark-wrap" {...rise(0.18)}>
             <img
               className="hero-mark"
               src={siteConfig.empresa.logoMonogramaHero}
@@ -161,26 +187,36 @@ function Hero() {
               width={1386}
               height={622}
             />
-          </div>
-          <h1 className="display">{hero.title}</h1>
+          </motion.div>
+          <motion.h1 className="display" {...rise(0.3)}>
+            {hero.title}
+          </motion.h1>
         </div>
-        <p className="measure">{hero.subtext}</p>
+        <motion.p className="measure" {...rise(0.42)}>
+          {hero.subtext}
+        </motion.p>
         {contactHref ? (
-          <ButtonLink href={contactHref} target="_blank" rel="noreferrer">
-            {getContactLabel()}
-          </ButtonLink>
+          <motion.div {...rise(0.54)}>
+            <ButtonLink href={contactHref} target="_blank" rel="noreferrer">
+              {getContactLabel()}
+            </ButtonLink>
+          </motion.div>
         ) : null}
-        <p className="hero-meta">
+        <motion.p className="hero-meta" {...rise(0.66)}>
           {hero.meta.map((item) => (
             <span key={item}>{item}</span>
           ))}
-        </p>
+        </motion.p>
       </div>
-      <a className="scroll-hint" href={`#${homeContent.identity.id}`}>
+      <motion.a
+        className="scroll-hint"
+        href={`#${homeContent.identity.id}`}
+        {...rise(0.8)}
+      >
         <span className="sr-only">Continuar</span>
         Rolar
         <span className="scroll-hint-line" aria-hidden="true" />
-      </a>
+      </motion.a>
     </section>
   );
 }

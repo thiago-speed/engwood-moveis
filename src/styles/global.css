@@ -605,6 +605,14 @@ section[id] {
   color: var(--paper);
 }
 
+.hero-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: rgb(16 14 12);
+}
+
 .hero-shade {
   position: absolute;
   inset: 0;
